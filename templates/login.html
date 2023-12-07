@@ -10,7 +10,7 @@
 <div class="flex-auto p-6">
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
-        <div class="w-full p-4 mb-4 text-white rounded-lg bg-blue-500 alert-{{ messages[0][1] }}">
+        <div class="alert-{{ messages[0][1] }}">
           {{ messages[0][0] }}
         </div>
       {% endif %}

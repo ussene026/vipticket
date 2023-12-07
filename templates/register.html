@@ -99,11 +99,11 @@
             </label>
         </div>
         {% with messages = get_flashed_messages(with_categories=true) %}
-          {% if messages %}
-            <div class="w-full p-4 mb-4 text-white rounded-lg bg-blue-500 alert-{{ messages[0][1] }}">
-              {{ messages[0][0] }}
-            </div>
-          {% endif %}
+            {% if messages %}
+                <div class="w-full p-4 mb-4 text-white rounded-lg bg-blue-500 alert-{{ messages[0][1] }}">
+                {{ messages[0][0] }}
+                </div>
+            {% endif %}
         {% endwith %}
         <div class="text-center">
             <button type="submit"

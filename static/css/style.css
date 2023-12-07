@@ -1,0 +1,16 @@
+.alert-danger{
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+    width: 100%;
+    color: #ffffff;
+    background-color: #EF4444;
+}
+.alert-success {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+    width: 100%;
+    color: #ffffff;
+    background-color: #10B981;
+}
