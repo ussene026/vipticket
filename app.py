@@ -65,7 +65,6 @@ def login():
             user.nome = user_data[1]
             user.telefone = user_data[2]
             user.password = user_data[3]
-
             login_user(user)
             flash("success", "Autenticado com sucesso!")
             return redirect(url_for("dashboard"))
