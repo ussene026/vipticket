@@ -8,18 +8,18 @@ login = Blueprint("login", __name__)
 @login.route("/login", methods=["GET", "POST"])
 def login_route():
     if request.method == "POST":
-        telefone = request.form["telefone"]
+        email = request.form["email"]
         password = request.form["password"]
 
-        query = "SELECT * FROM users WHERE Telefone = %s"
-        cursor.execute(query, (telefone,))
+        query = "SELECT * FROM users WHERE Email = %s"
+        cursor.execute(query, (email,))
         user_data = cursor.fetchone()
 
         if user_data and bcrypt.check_password_hash(user_data[3], password):
             user = User()
             user.id = user_data[0]
             user.nome = user_data[1]
-            user.telefone = user_data[2]
+            user.email = user_data[2]
             user.password = user_data[3]
 
             login_user(user)

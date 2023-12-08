@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, login_user, UserMixin, login_required, logout_user, current_user
 import mysql.connector
@@ -12,16 +12,16 @@ db = mysql.connector.connect(
     host="localhost",
     user="root",
     password="root",
-    database="vipticket"
+    database="viptask"
 )
 cursor = db.cursor()
 
 class User(UserMixin):
     pass
 
-def telefone_existente(telefone):
-    query = "SELECT COUNT(*) FROM users WHERE Telefone = %s"
-    cursor.execute(query, (telefone,))
+def telefone_existente(email):
+    query = "SELECT COUNT(*) FROM users WHERE Email = %s"
+    cursor.execute(query, (email,))
     result = cursor.fetchone()
     return result[0] > 0
 
@@ -35,8 +35,10 @@ def load_user(user_id):
         user = User()
         user.id = user_data[0]
         user.nome = user_data[1]
-        user.telefone = user_data[2]
+        user.email = user_data[2]
         user.password = user_data[3]
+
+        session['id'] = user_data[0]
         return user
     return None
 
@@ -52,18 +54,18 @@ def index():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        telefone = request.form["telefone"]
+        email = request.form["email"]
         password = request.form["password"]
 
-        query = "SELECT * FROM users WHERE Telefone = %s"
-        cursor.execute(query, (telefone,))
+        query = "SELECT * FROM users WHERE Email = %s"
+        cursor.execute(query, (email,))
         user_data = cursor.fetchone()
 
         if user_data and bcrypt.check_password_hash(user_data[3], password):
             user = User()
             user.id = user_data[0]
             user.nome = user_data[1]
-            user.telefone = user_data[2]
+            user.email = user_data[2]
             user.password = user_data[3]
             login_user(user)
             flash("success", "Autenticado com sucesso!")
@@ -77,17 +79,17 @@ def login():
 def register():
     if request.method == "POST":
         nome = request.form["nome"]
-        telefone = request.form["telefone"]
+        email = request.form["email"]
         password = request.form["password"]
 
-        if telefone_existente(telefone):
-            flash("danger", "Desculpe, o telefone selecionado não está disponível. Escolha outro número e tente novamente.")
+        if telefone_existente(email):
+            flash("danger", "Desculpe, o email selecionado não está disponível. Escolha outro número e tente novamente.")
             return redirect(url_for("register"))
 
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 
-        query = "INSERT INTO users (Nome, Telefone, Password) VALUES (%s, %s, %s)"
-        values = (nome, telefone, hashed_password)
+        query = "INSERT INTO users (Nome, Email, Password) VALUES (%s, %s, %s)"
+        values = (nome, email, hashed_password)
         cursor.execute(query, values)
         db.commit()
 
@@ -99,7 +101,30 @@ def register():
 @app.route("/dashboard")
 @login_required
 def dashboard():
-    return render_template("dashboard.html")
+    ler = f'SELECT * FROM task WHERE user_id = "{session["id"]}"'
+    cursor.execute(ler)
+    dados = cursor.fetchall()
+
+    return render_template("dashboard.html", dados=dados)
+
+@app.route('/add', methods=["POST"])
+def add():
+    taskName = request.form["taskName"]
+    query = "INSERT INTO task (user_id, taskname, data) VALUES (%s, %s, CURRENT_DATE)"
+    values = (session['id'], taskName)
+    cursor.execute(query, values)
+    db.commit()
+
+    return redirect('/dashboard')
+
+
+@app.route("/delete/<int:id>")
+def delete(id):
+    cursor.execute(f'DELETE FROM task WHERE id = {id}')
+    db.commit()
+
+    return redirect('/dashboard')
+
 
 @app.route("/logout")
 @login_required
