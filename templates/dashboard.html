@@ -23,7 +23,7 @@
             <ul class="my-4 ">
                 {% if dados %}
                     {% for res in dados %}
-                        <li class=" mt-4" id="{{ res.0 }}">
+                        <li class=" mt-4" id="1">
                             <div class="flex gap-0.5 justify-between">
                                 <div class="w-9/12 h-12 bg-[#e0ebff] rounded-[7px] flex justify-start items-center px-3">
                                     <span id="check1" class="w-7 h-7 bg-white rounded-full border border-white transition-all cursor-pointer hover:border-[#36d344] flex justify-center items-center" onclick="checked(1)">
@@ -48,7 +48,7 @@
         </div>
     </div>
     <!-- Modal NEW TASK -->
-    <div id="myModalAdd" class="modal">
+    <div id="openAddModalBox" class="modal">
         <div class="modal-content ">
             <span class="close" onclick="closeModal()">&times;</span>
             <h2 class="uppercase mb-10">Adicionar Task</h2>
@@ -61,32 +61,21 @@
         </div>
     </div>
     <!-- UPDATE TASK -->
-    {% for res in dados %}
-        <div id="myModalUpdate" class="modal">
-            <div class="modal-content">
-                <span class="close" onclick="closeModal()">&times;</span>
-                <h2 class="uppercase mb-10">Atualizar Tarefa</h2>
-                <form action="/update/{{ res.0 }}" method="POST" id="updateTaskForm" class="flex">
-                    <input type="text" name="updatetaskName" id="updatetaskName" placeholder="..."
-                        class="flex-grow rounded-md border-0 py-1.5 pl-7 pr-2 text-gray-900 ring-1 ring-inset placeholder:text-gray-400 sm:text-sm sm:leading-6"
-                        required>
-                    <button type="submit" class="ml-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">ACTUALIZAR AGORA</button>
-                </form>
-            </div>
+    <div id="myModalUpdate" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 class="uppercase mb-10">Atualizar Tarefa</h2>
+            <form action="/update/{{ update_id }}" method="POST" id="updateTaskForm" class="flex">
+                <input type="text" name="updatetaskName" id="updatetaskName" placeholder="..."
+                    class="flex-grow rounded-md border-0 py-1.5 pl-7 pr-2 text-gray-900 ring-1 ring-inset placeholder:text-gray-400 sm:text-sm sm:leading-6"
+                    required>
+                <button type="submit" class="ml-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">ACTUALIZAR AGORA</button>
+            </form>
         </div>
-    {% endfor %}
+    </div>
 </body>
 <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"></script>
 <script>
-
-    function openUpdateForm(taskId, taskName) {
-        document.getElementById('updateTaskForm').action = '/update/' + taskId;
-        document.getElementById('updatetaskName').value = taskName;
-
-        // Abre a modal (coloque aqui o código que abre a sua modal)
-    }
-
-
     var setdate = document.querySelector(".set_date");
     var settime = document.querySelector(".set_time");
     var date = new Date().toDateString();
@@ -102,48 +91,27 @@
         strike_unstrike.classList.toggle('strike_none');
     }
 
-    //JAVASCRIPT PARA MODAL
-    // Get the modal elements
-    var modalAdd = document.getElementById("myModalAdd");
-    var modalUpdate = document.getElementById("myModalUpdate");
+    // JAVASCRIPT PARA MODAL
+    const openAddModalBox = document.getElementById("openAddModalBox");
+    const openAddModalBtn = document.getElementById("openAddModalBtn");
+    const span = document.getElementsByClassName("close")[0];
 
-    // Get the buttons that open the modals
-    var btnOpenAdd = document.getElementById("openAddModalBtn");
-    var btnOpenUpdate = document.getElementById("openUpdateModalBtn");
-
-    // Get the <span> elements that close the modals
-    var spanAdd = modalAdd.getElementsByClassName("close")[0];
-    var spanUpdate = modalUpdate.getElementsByClassName("close")[0];
-
-    // When the user clicks the buttons, open the respective modals
-    btnOpenAdd.onclick = function () {
-        modalAdd.style.display = "block";
+    openAddModalBtn.onclick = function () {
+        openAddModalBox.style.display = "block";
     };
 
-    btnOpenUpdate.onclick = function () {
-        modalUpdate.style.display = "block";
+    span.onclick = function () {
+        closeModal();
     };
 
-    // When the user clicks on <span> (x), close the modals
-    spanAdd.onclick = function () {
-        closeModal(modalAdd);
-    };
-
-    spanUpdate.onclick = function () {
-        closeModal(modalUpdate);
-    };
-
-    // When the user clicks anywhere outside of the modals, close them
     window.onclick = function (event) {
-        if (event.target == modalAdd) {
-            closeModal(modalAdd);
-        } else if (event.target == modalUpdate) {
-            closeModal(modalUpdate);
+        if (event.target == openAddModalBox) {
+            closeModal();
         }
     };
 
-    function closeModal(modal) {
-        modal.style.display = "none";
+    function closeModal() {
+        openAddModalBox.style.display = "none";
     }
 </script>
 </html>

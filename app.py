@@ -49,10 +49,13 @@ def unauthorized_callback():
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("login.html")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for("dashboard"))
+
     if request.method == "POST":
         email = request.form["email"]
         password = request.form["password"]
@@ -117,15 +120,24 @@ def add():
 
     return redirect('/dashboard')
 
-@app.route("/update/<int:id>", methods=["GET", "POST"])
-def update(id):
-    taskName = request.form["updatetaskName"]
-    query = "UPDATE task SET taskname = %s WHERE id = %s AND user_id = %s"
-    values = (taskName, id, session['id'])
-    cursor.execute(query, values)
-    db.commit()
 
-    return redirect('/dashboard')
+@app.route("/update/<int:id>", methods=["GET", "POST"])
+@login_required
+def update(id):
+    if request.method == "POST":
+        taskName = request.form["updatetaskName"]
+        query = "UPDATE task SET taskname = %s WHERE id = %s AND user_id = %s"
+        values = (taskName, id, session['id'])
+        cursor.execute(query, values)
+        db.commit()
+        return redirect('/dashboard')
+
+    # Se for uma solicitação GET, apenas renderize o formulário de atualização
+    ler = f'SELECT * FROM task WHERE user_id = "{session["id"]}"'
+    cursor.execute(ler)
+    dados = cursor.fetchall()
+
+    return render_template("dashboard.html", dados=dados, update_id=id)
 
 @app.route("/delete/<int:id>")
 def delete(id):
