@@ -19,7 +19,7 @@ cursor = db.cursor()
 class User(UserMixin):
     pass
 
-def telefone_existente(email):
+def email_existente(email):
     query = "SELECT COUNT(*) FROM users WHERE Email = %s"
     cursor.execute(query, (email,))
     result = cursor.fetchone()
@@ -82,7 +82,7 @@ def register():
         email = request.form["email"]
         password = request.form["password"]
 
-        if telefone_existente(email):
+        if email_existente(email):
             flash("danger", "Desculpe, o email selecionado não está disponível. Escolha outro número e tente novamente.")
             return redirect(url_for("register"))
 
@@ -110,13 +110,22 @@ def dashboard():
 @app.route('/add', methods=["POST"])
 def add():
     taskName = request.form["taskName"]
-    query = "INSERT INTO task (user_id, taskname, data) VALUES (%s, %s, CURRENT_DATE)"
+    query = "INSERT INTO task (user_id, taskname, data) VALUES (%s, %s, NOW())"
     values = (session['id'], taskName)
     cursor.execute(query, values)
     db.commit()
 
     return redirect('/dashboard')
 
+@app.route("/update/<int:id>", methods=["GET", "POST"])
+def update(id):
+    taskName = request.form["updatetaskName"]
+    query = "UPDATE task SET taskname = %s WHERE id = %s AND user_id = %s"
+    values = (taskName, id, session['id'])
+    cursor.execute(query, values)
+    db.commit()
+
+    return redirect('/dashboard')
 
 @app.route("/delete/<int:id>")
 def delete(id):
@@ -124,7 +133,6 @@ def delete(id):
     db.commit()
 
     return redirect('/dashboard')
-
 
 @app.route("/logout")
 @login_required

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Todas suas tarefas - VIP Task</title>
     <link rel="stylesheet" href="../static/css/main.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -18,29 +18,37 @@
             </div>
             <div class="flex justify-between">
                 <p class="text-xl font-semibold mt-2 text-[#063c76]">Santos Ussene | <small class="lowercase">Ussene026@outlook.com</small></p>
-                <button id="openModalBtn" class="text-md font-semibold mt-2 bg-[#063c76] text-white text-center uppercase p-2 rounded-md">Adicionar
-                    Task</button>
+                <button id="openAddModalBtn" class="text-md font-semibold mt-2 bg-[#063c76] text-white text-center uppercase p-2 rounded-md">Adicionar Task</button>
             </div>
             <ul class="my-4 ">
-                {% for res in dados %}
-                <li class=" mt-4" id="1">
-                    <div class="flex gap-2">
-                        <div class="w-9/12 h-12 bg-[#e0ebff] rounded-[7px] flex justify-start items-center px-3">
-                            <span id="check1" class=" w-7 h-7 bg-white rounded-full border border-white transition-all cursor-pointer hover:border-[#36d344] flex justify-center items-center" onclick="checked(1)">
-                                <i class="text-white fa fa-check"></i>
-                            </span>
-                            <span id="strike1" class="strike_none text-sm ml-4 text-[#5b7a9d] font-semibold">{{ res.2 }}</span>
-                            <span class="ml-auto text-sm ml-4 text-[#5b7a9d] font-semibold">{{ res.3 }}</span>
+                {% if dados %}
+                    {% for res in dados %}
+                        <li class=" mt-4" id="{{ res.0 }}">
+                            <div class="flex gap-0.5 justify-between">
+                                <div class="w-9/12 h-12 bg-[#e0ebff] rounded-[7px] flex justify-start items-center px-3">
+                                    <span id="check1" class="w-7 h-7 bg-white rounded-full border border-white transition-all cursor-pointer hover:border-[#36d344] flex justify-center items-center" onclick="checked(1)">
+                                        <i class="text-white fa fa-check"></i>
+                                    </span>
+                                    <span id="strike1" class="strike_none text-sm ml-4 text-[#5b7a9d] font-semibold">{{ res.2 }}</span>
+                                    <span class="ml-auto text-sm ml-4 text-[#5b7a9d] font-semibold">{{ res.3 }}</span>
+                                </div>
+                                <button id="openUpdateModalBtn" class="w-24 h-12 bg-[#F59E0B] rounded-[7px] flex justify-center text-sm text-white font-semibold items-center">Actualizar</button>
+                                <a href="/delete/{{ res.0 }}" class="w-24 h-12 bg-red-500 rounded-[7px] flex justify-center text-sm text-white font-semibold items-center ">Eliminar</a>
+                            </div>
+                        </li>
+                    {% endfor %}
+                {% else %}
+                    <li class="mt-4" id="no-data">
+                        <div class="w-full h-12 bg-[#e0ebff] rounded-[7px] flex justify-center items-center px-3">
+                            <span>Nenhuma tarefa cadastrada</span>
                         </div>
-                        <a href="/delete/{{ res.0 }}" class="w-1/4 h-12 bg-[#e0ebff] rounded-[7px] flex justify-center text-sm text-[#5b7a9d] font-semibold items-center ">Eliminar</a>
-                    </div>
-                </li>
-                {% endfor %}
+                    </li>
+                {% endif %}
             </ul>
         </div>
     </div>
-    <!-- Modal -->
-    <div id="myModal" class="modal">
+    <!-- Modal NEW TASK -->
+    <div id="myModalAdd" class="modal">
         <div class="modal-content ">
             <span class="close" onclick="closeModal()">&times;</span>
             <h2 class="uppercase mb-10">Adicionar Task</h2>
@@ -48,60 +56,93 @@
                 <input type="text" name="taskName" placeholder="Descreva a sua tarefa aqui..."
                     class="flex-grow rounded-md border-0 py-1.5 pl-7 pr-2 text-gray-900 ring-1 ring-inset placeholder:text-gray-400 sm:text-sm sm:leading-6"
                     required>
-                <button type="submit" class="ml-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">ADICIONAR</button>
+                <button type="submit" class="ml-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">ADICIONAR</button>
             </form>
         </div>
     </div>
+    <!-- UPDATE TASK -->
+    {% for res in dados %}
+        <div id="myModalUpdate" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h2 class="uppercase mb-10">Atualizar Tarefa</h2>
+                <form action="/update/{{ res.0 }}" method="POST" id="updateTaskForm" class="flex">
+                    <input type="text" name="updatetaskName" id="updatetaskName" placeholder="..."
+                        class="flex-grow rounded-md border-0 py-1.5 pl-7 pr-2 text-gray-900 ring-1 ring-inset placeholder:text-gray-400 sm:text-sm sm:leading-6"
+                        required>
+                    <button type="submit" class="ml-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">ACTUALIZAR AGORA</button>
+                </form>
+            </div>
+        </div>
+    {% endfor %}
 </body>
 <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"></script>
 <script>
+
+    function openUpdateForm(taskId, taskName) {
+        document.getElementById('updateTaskForm').action = '/update/' + taskId;
+        document.getElementById('updatetaskName').value = taskName;
+
+        // Abre a modal (coloque aqui o código que abre a sua modal)
+    }
+
+
     var setdate = document.querySelector(".set_date");
     var settime = document.querySelector(".set_time");
-
     var date = new Date().toDateString();
     setdate.innerHTML = date;
-
     setInterval(function () {
         var time = new Date().toLocaleTimeString();
         settime.innerHTML = time;
     }, 500);
-
     function checked(id) {
         var checked_green = document.getElementById("check" + id);
         checked_green.classList.toggle('green');
         var strike_unstrike = document.getElementById("strike" + id);
         strike_unstrike.classList.toggle('strike_none');
     }
-    
 
     //JAVASCRIPT PARA MODAL
-    // Get the modal element
-    var modal = document.getElementById("myModal");
+    // Get the modal elements
+    var modalAdd = document.getElementById("myModalAdd");
+    var modalUpdate = document.getElementById("myModalUpdate");
 
-    // Get the button that opens the modal
-    var btn = document.getElementById("openModalBtn");
+    // Get the buttons that open the modals
+    var btnOpenAdd = document.getElementById("openAddModalBtn");
+    var btnOpenUpdate = document.getElementById("openUpdateModalBtn");
 
-    // Get the <span> element that closes the modal
-    var span = document.getElementsByClassName("close")[0];
+    // Get the <span> elements that close the modals
+    var spanAdd = modalAdd.getElementsByClassName("close")[0];
+    var spanUpdate = modalUpdate.getElementsByClassName("close")[0];
 
-    // When the user clicks the button, open the modal
-    btn.onclick = function () {
-        modal.style.display = "block";
+    // When the user clicks the buttons, open the respective modals
+    btnOpenAdd.onclick = function () {
+        modalAdd.style.display = "block";
     };
 
-    // When the user clicks on <span> (x), close the modal
-    span.onclick = function () {
-        closeModal();
+    btnOpenUpdate.onclick = function () {
+        modalUpdate.style.display = "block";
     };
 
-    // When the user clicks anywhere outside of the modal, close it
+    // When the user clicks on <span> (x), close the modals
+    spanAdd.onclick = function () {
+        closeModal(modalAdd);
+    };
+
+    spanUpdate.onclick = function () {
+        closeModal(modalUpdate);
+    };
+
+    // When the user clicks anywhere outside of the modals, close them
     window.onclick = function (event) {
-        if (event.target == modal) {
-            closeModal();
+        if (event.target == modalAdd) {
+            closeModal(modalAdd);
+        } else if (event.target == modalUpdate) {
+            closeModal(modalUpdate);
         }
     };
 
-    function closeModal() {
+    function closeModal(modal) {
         modal.style.display = "none";
     }
 </script>
