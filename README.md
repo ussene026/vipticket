@@ -1,1 +1,1 @@
-# VIP Ticket - {{Slogan Here kkkk}}
+# VIP Ticket - A new app
