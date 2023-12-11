@@ -39,6 +39,8 @@ def load_user(user_id):
         user.password = user_data[3]
 
         session['id'] = user_data[0]
+        session['nome'] = user_data[1]
+        session['email'] = user_data[2]
         return user
     return None
 
@@ -74,7 +76,6 @@ def login():
             user.email = user_data[2]
             user.password = user_data[3]
             login_user(user)
-            # flash("success", "Autenticado com sucesso!")
             return redirect(url_for("dashboard"))
         else:
             flash("danger", "Credenciais inválidas. Tente novamente.")

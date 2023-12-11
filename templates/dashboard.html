@@ -17,26 +17,24 @@
                 <p class="set_time">8:00 AM</p>
             </div>
             <div class="flex justify-between">
-                <p class="text-xl font-semibold mt-2 text-[#063c76]">Santos Ussene |
-                    <small class="lowercase">Ussene026@outlook.com</small> -
+                <p class="text-xl font-semibold mt-2 text-[#063c76]">{{ session['nome'] }} |
+                    <small class="lowercase">{{ session['email'] }}</small> -
                     <small><a href="{{ url_for('logout') }}" class="text-md font-semibold text-[#F59E0B] text-center uppercase p-2">Sair</a></small>
                 </p>
                 <button id="openAddModalBtn" class="text-md font-semibold mt-2 bg-[#063c76] text-white text-center uppercase p-2 rounded-md">Adicionar Task</button>
-{#                <a href="{{ url_for('logout') }}" class="text-md font-semibold mt-2 bg-[#F59E0B] text-white text-center uppercase p-2 rounded-md">Sair</a>#}
             </div>
             <ul class="my-4 ">
                 {% if dados %}
                     {% for res in dados %}
                         <li class=" mt-4" id="1">
-                            <div class="flex gap-0.5 justify-between">
-                                <div class="w-9/12 h-12 bg-[#e0ebff] rounded-[7px] flex justify-start items-center px-3">
+                            <div class="flex gap-2 justify-between">
+                                <div class="w-full h-12 bg-[#e0ebff] rounded-[7px] flex justify-start items-center px-3">
                                     <span id="check1" class="w-7 h-7 bg-white rounded-full border border-white transition-all cursor-pointer hover:border-[#36d344] flex justify-center items-center" onclick="checked(1)">
                                         <i class="text-white fa fa-check"></i>
                                     </span>
                                     <span id="strike1" class="strike_none text-sm ml-4 text-[#5b7a9d] font-semibold">{{ res.2 }}</span>
                                     <span class="ml-auto text-sm ml-4 text-[#5b7a9d] font-semibold">{{ res.3 }}</span>
                                 </div>
-                                <button id="openUpdateModalBtn" class="w-24 h-12 bg-[#F59E0B] rounded-[7px] flex justify-center text-sm text-white font-semibold items-center">Actualizar</button>
                                 <a href="/delete/{{ res.0 }}" class="w-24 h-12 bg-red-500 rounded-[7px] flex justify-center text-sm text-white font-semibold items-center ">Eliminar</a>
                             </div>
                         </li>
@@ -61,19 +59,6 @@
                     class="flex-grow rounded-md border-0 py-1.5 pl-7 pr-2 text-gray-900 ring-1 ring-inset placeholder:text-gray-400 sm:text-sm sm:leading-6"
                     required>
                 <button type="submit" class="ml-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">ADICIONAR</button>
-            </form>
-        </div>
-    </div>
-    <!-- UPDATE TASK -->
-    <div id="myModalUpdate" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h2 class="uppercase mb-10">Atualizar Tarefa</h2>
-            <form action="/update/{{ update_id }}" method="POST" id="updateTaskForm" class="flex">
-                <input type="text" name="updatetaskName" id="updatetaskName" placeholder="..."
-                    class="flex-grow rounded-md border-0 py-1.5 pl-7 pr-2 text-gray-900 ring-1 ring-inset placeholder:text-gray-400 sm:text-sm sm:leading-6"
-                    required>
-                <button type="submit" class="ml-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">ACTUALIZAR AGORA</button>
             </form>
         </div>
     </div>
