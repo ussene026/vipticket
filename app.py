@@ -48,8 +48,11 @@ def unauthorized_callback():
     return redirect(url_for("login"))
 
 @app.route("/")
+@login_required
 def index():
-    return render_template("login.html")
+    if current_user.is_authenticated:
+        return redirect(url_for("dashboard"))
+    return render_template("dashboard.html")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -71,7 +74,7 @@ def login():
             user.email = user_data[2]
             user.password = user_data[3]
             login_user(user)
-            flash("success", "Autenticado com sucesso!")
+            # flash("success", "Autenticado com sucesso!")
             return redirect(url_for("dashboard"))
         else:
             flash("danger", "Credenciais inválidas. Tente novamente.")
@@ -80,6 +83,9 @@ def login():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
+    if current_user.is_authenticated:
+        return redirect(url_for("dashboard"))
+
     if request.method == "POST":
         nome = request.form["nome"]
         email = request.form["email"]
@@ -120,25 +126,6 @@ def add():
 
     return redirect('/dashboard')
 
-
-@app.route("/update/<int:id>", methods=["GET", "POST"])
-@login_required
-def update(id):
-    if request.method == "POST":
-        taskName = request.form["updatetaskName"]
-        query = "UPDATE task SET taskname = %s WHERE id = %s AND user_id = %s"
-        values = (taskName, id, session['id'])
-        cursor.execute(query, values)
-        db.commit()
-        return redirect('/dashboard')
-
-    # Se for uma solicitação GET, apenas renderize o formulário de atualização
-    ler = f'SELECT * FROM task WHERE user_id = "{session["id"]}"'
-    cursor.execute(ler)
-    dados = cursor.fetchall()
-
-    return render_template("dashboard.html", dados=dados, update_id=id)
-
 @app.route("/delete/<int:id>")
 def delete(id):
     cursor.execute(f'DELETE FROM task WHERE id = {id}')
@@ -151,7 +138,7 @@ def delete(id):
 def logout():
     logout_user()
     flash("success", "Sessão terminada!")
-    return redirect(url_for("index"))
+    return redirect(url_for("login"))
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -17,8 +17,12 @@
                 <p class="set_time">8:00 AM</p>
             </div>
             <div class="flex justify-between">
-                <p class="text-xl font-semibold mt-2 text-[#063c76]">Santos Ussene | <small class="lowercase">Ussene026@outlook.com</small></p>
+                <p class="text-xl font-semibold mt-2 text-[#063c76]">Santos Ussene |
+                    <small class="lowercase">Ussene026@outlook.com</small> -
+                    <small><a href="{{ url_for('logout') }}" class="text-md font-semibold text-[#F59E0B] text-center uppercase p-2">Sair</a></small>
+                </p>
                 <button id="openAddModalBtn" class="text-md font-semibold mt-2 bg-[#063c76] text-white text-center uppercase p-2 rounded-md">Adicionar Task</button>
+{#                <a href="{{ url_for('logout') }}" class="text-md font-semibold mt-2 bg-[#F59E0B] text-white text-center uppercase p-2 rounded-md">Sair</a>#}
             </div>
             <ul class="my-4 ">
                 {% if dados %}
