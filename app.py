@@ -4,7 +4,7 @@ from flask_login import LoginManager, login_user, UserMixin, login_required, log
 import mysql.connector
 
 app = Flask(__name__)
-app.secret_key = 'djfljdfljfnkjsfhjfshjkfjfjfhjdhfdjhdfu'
+app.secret_key = '026root'
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 
@@ -27,7 +27,6 @@ def email_existente(email):
 
 @login_manager.user_loader
 def load_user(user_id):
-    # Função para carregar usuário pelo ID
     query = "SELECT * FROM users WHERE ID = %s"
     cursor.execute(query, (user_id,))
     user_data = cursor.fetchone()
